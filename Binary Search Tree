@@ -42,6 +42,27 @@ bool Sarch(Node * root, int data)
 	else return Sarch(root->right, data);
 }
 
+// Min node in BST
+int FindMin(Node * root)
+{
+	if(root == NULL) return -1;
+	while (root->left != NULL)
+	{
+		root = root->left;
+	}
+		return root->data;
+}
+
+// find max node in BST
+int FindMax(Node * root)
+{
+	if(root == NULL) return -1;
+	while (root->right != NULL)
+	{
+		root = root->right;
+	}
+		return root->data;
+}
 
 int main()
 {
@@ -59,6 +80,9 @@ int main()
 	if(Sarch(Bstroot,x) == true) printf("Found \n");
 	else printf("Not Found \n");
 
-
+	int a =FindMax(Bstroot);
+	int b =FindMin(Bstroot);
+	printf("Min Value: %d \n",a);
+	printf("Max Value: %d \n",b);
 	return 0;
 }
