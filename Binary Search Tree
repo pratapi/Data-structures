@@ -64,6 +64,19 @@ int FindMax(Node * root)
 		return root->data;
 }
 
+// check wheather BST is or not
+bool IsBSTUtil(Node * root,int min , int max)
+{
+	if(root == NULL) return;
+	if(root->data > min && root->data < max && IsBSTUtil(root->left,min,root->data) && IsBSTUtil(root->right,root->data,max))
+		return true;
+	else return false;
+}
+bool IsBinaryTree(Node * root)
+{
+    return IsBSTUtil(root,INT_MIN,INT_MAX);
+}
+
 int main()
 {
   	Node * Bstroot = NULL;
@@ -84,5 +97,8 @@ int main()
 	int b =FindMin(Bstroot);
 	printf("Min Value: %d \n",a);
 	printf("Max Value: %d \n",b);
+	bool truth = IsBinaryTree(root);
+	printf("truth of Binary Tree : %b" ,truth);
+	
 	return 0;
 }
