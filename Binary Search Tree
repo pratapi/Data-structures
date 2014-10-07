@@ -67,7 +67,7 @@ int FindMax(Node * root)
 // check wheather BST is or not
 bool IsBSTUtil(Node * root,int min , int max)
 {
-	if(root == NULL) return;
+	if(root == NULL) return true;
 	if(root->data > min && root->data < max && IsBSTUtil(root->left,min,root->data) && IsBSTUtil(root->right,root->data,max))
 		return true;
 	else return false;
