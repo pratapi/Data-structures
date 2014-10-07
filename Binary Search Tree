@@ -97,7 +97,7 @@ int main()
 	int b =FindMin(Bstroot);
 	printf("Min Value: %d \n",a);
 	printf("Max Value: %d \n",b);
-	bool truth = IsBinaryTree(root);
+	bool truth = IsBinaryTree(Bstroot);
 	printf("truth of Binary Tree : %b" ,truth);
 	
 	return 0;
