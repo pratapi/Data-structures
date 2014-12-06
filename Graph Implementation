@@ -1,5 +1,4 @@
 // Unidirected Graph implementation : Adjacency List
-
 #include <iostream>
 using namespace std;
 
@@ -10,16 +9,10 @@ struct Node
 	Node * next;
 };
 
-// List of Head ptr's to each linked list 
-struct HeadPtrList 
+// List of Head ptr's to each linked list
+struct HeadPtrList
 {
 	Node * head;
-};
-
-struct Graph
-{
-	int nV;  // no of vertices
-	HeadPtrList * listofHeadptr; // ptr to head ptr's list
 };
 
 // creating new node or adjacent edge
@@ -28,54 +21,65 @@ Node * CreateNode(const int & v )
 	Node * newNode = new Node();
 	newNode->v = v;
 	newNode->next = NULL;
-
 	return newNode;
 }
 
-// initializing graph
-Graph * CreateGraph(const int & nv)
+class Graph
 {
-	Graph * graph = new Graph();
-	graph->nV = nv;		// setting number of vertices
+	int nV; // no of vertices
+	HeadPtrList * listofHeadptr; // ptr to head ptr's list
 
-	graph->listofHeadptr = new HeadPtrList[nv]; // creating head ptr's list with no. of vertices
+public:
+	Graph();
+	void addEdge(int u , int v);
+	void Print();
+	int NoofVertices() { return this->nV; }
+};
 
-	for(int i =0; i < nv; i++)
-		graph->listofHeadptr[i].head = NULL; // setting first whole list to NULL
+// initializing graph
+Graph::Graph()
+{
+	int V;
+	printf("Enter the number of vertices for Graph G \n");
+	scanf_s("%d", &V);
+	this->nV = V; // setting number of vertices
+	this->listofHeadptr = new HeadPtrList[V]; // creating head ptr's list with no. of vertices
+	for(int i =0; i < V; i++)
+		this->listofHeadptr[i].head = NULL; // setting first whole list to NULL
 
-	return graph;
 }
 
 // adding edge for undirected graph
-void addEdge(Graph * graph, int u, int v)
+void Graph::addEdge(int u, int v)
 {
 	// Check for duplicacy
-	Node * chkEdge = graph->listofHeadptr[u].head;
+	Node * chkEdge = this->listofHeadptr[u].head;
 	while(chkEdge)
 	{
-		if(chkEdge->v == v) 
+		if(chkEdge->v == v)
 		{
-			return; 
-		} // duplicate Edge found
-		else { chkEdge = chkEdge->next;}
+			return; // duplicate Edge found
+		} 
+		else 
+		{ chkEdge = chkEdge->next;}
 	}
 
 	// undirected graph firest create from u->v then v->u
 	Node * newEdge_u = CreateNode(v);
-	newEdge_u->next = graph->listofHeadptr[u].head;
-	graph->listofHeadptr[u].head = newEdge_u;
+	newEdge_u->next = this->listofHeadptr[u].head;
+	this->listofHeadptr[u].head = newEdge_u;
 
 	Node * newEdge_v = CreateNode(u);
-	newEdge_v->next = graph->listofHeadptr[v].head;
-	graph->listofHeadptr[v].head = newEdge_v;
+	newEdge_v->next = this->listofHeadptr[v].head;
+	this->listofHeadptr[v].head = newEdge_v;
 }
 
 // Utility function to print array of adjacency list
-void Print(const Graph * graph)
+void Graph::Print()
 {
-	for(int u=0; u < graph->nV ; u++)
+	for(int u=0; u < this->nV ; u++)
 	{
-		Node * iHead = graph->listofHeadptr[u].head;
+		Node * iHead = this->listofHeadptr[u].head;
 		printf("\n Adjacency list of vertex %d\n head ", u);
 		while(iHead)
 		{
@@ -89,11 +93,7 @@ void Print(const Graph * graph)
 // Driver's Program
 int main()
 {
-	int V;
-	printf("Enter the number of vertices for Graph G \n");
-	scanf_s("%d", &V);
-	Graph * graph = CreateGraph(V);
-
+	Graph graph;
 	int E=0,u=-1,v=-1;
 	printf("Enter the number of Edges \n");
 	scanf_s("%d", &E);
@@ -101,11 +101,17 @@ int main()
 	while(E--)
 	{
 		scanf_s("%d %d", &u, &v);
-		addEdge(graph, u, v);
+		if( (u>=0) && (u < graph.NoofVertices()) && (v >= 0) && (v < graph.NoofVertices()))
+		 { 
+			 graph.addEdge(u, v);
+		} else
+		{
+			printf("Incorrect Edge please enter again");
+			++E;
+		}
 	}
 
 	// Print Graph
-	Print(graph);
-
+	graph.Print();
 	return 0;
 }
