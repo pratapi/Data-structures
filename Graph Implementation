@@ -1,5 +1,6 @@
 // Unidirected Graph implementation : Adjacency List
 #include <iostream>
+#include <list>
 using namespace std;
 
 // A structure to represent an adjacency list node
@@ -33,6 +34,8 @@ public:
 	Graph();
 	void addEdge(int u , int v);
 	void Print();
+	void BFS(int src);
+	void DFS(int src);
 	int NoofVertices() { return this->nV; }
 };
 
@@ -74,6 +77,85 @@ void Graph::addEdge(int u, int v)
 	this->listofHeadptr[v].head = newEdge_v;
 }
 
+// BFS
+void Graph::BFS(int src)
+{
+	// create bool array corresponds to vertices considering false (i.e not visited )
+	bool * bVisited = new bool[this->NoofVertices()];
+	for(int i = 0; i < this->NoofVertices(); i++)
+		bVisited[i] = false;
+
+	// create queue for BFS
+	list<int> queue;
+
+	// mark the current node visited and queue it
+	bVisited[src] = true;
+	queue.push_back(src);
+
+	printf_s("BFS : ");
+
+	while(!queue.empty())
+	{
+		// deueue the vertex from queue and print it
+		src = queue.front();
+		printf("/n %d \n", src);
+		queue.pop_front();
+
+		// Get all adjacent vertices of the dequeued vertex s
+        // If a adjacent has not been visited, then mark it visited
+        // and enqueue it
+		Node* iHead = this->listofHeadptr[src].head;
+		while(iHead)
+		{
+			int v = iHead->v;
+			if(!bVisited[v])
+			{
+				bVisited[v] = true;
+				queue.push_back(v);
+			}
+			iHead = iHead->next;
+		}
+	}
+	delete [] bVisited;
+}
+
+void Graph::DFS(int src)
+{
+	// create bool array corresponds to vertices considering false (i.e not visited )
+	bool * bVisited = new bool[this->nV];
+	for(int i=0; i<this->nV; i++)
+		bVisited[i] = false;
+
+	// creating stack
+	list<int> stack;
+
+	// push the current node on the stack and marked it as visited
+	stack.push_back(src);
+	bVisited[src] = true;
+
+	while(!stack.empty())
+	{
+		src = stack.back();
+		printf_s("%d  ", src);
+		stack.pop_back();
+
+		// get the one of adajcent node
+		Node* iHead = this->listofHeadptr[src].head;
+		while(iHead)
+		{
+			int v = iHead->v;
+			if(!bVisited[v])
+			{
+				bVisited[v] = true;
+				stack.push_back(v);
+			}
+			iHead = iHead->next;
+		}
+	}
+
+	delete [] bVisited;
+}
+
 // Utility function to print array of adjacency list
 void Graph::Print()
 {
@@ -113,5 +195,12 @@ int main()
 
 	// Print Graph
 	graph.Print();
+
+	// BFS traversal of graph
+	graph.BFS(0);
+
+	// DFS traversal of graph
+	graph.DFS(0);
+
 	return 0;
 }
