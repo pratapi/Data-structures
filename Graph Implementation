@@ -93,13 +93,13 @@ void Graph::BFS(int src)
 	bVisited[src] = true;
 	queue.push_back(src);
 
-	printf_s("BFS : ");
+	printf_s("BFS : \n");
 
 	while(!queue.empty())
 	{
 		// deueue the vertex from queue and print it
 		src = queue.front();
-		printf("/n %d \n", src);
+		printf("%d ", src);
 		queue.pop_front();
 
 		// Get all adjacent vertices of the dequeued vertex s
@@ -127,6 +127,7 @@ void Graph::DFS(int src)
 	for(int i=0; i<this->nV; i++)
 		bVisited[i] = false;
 
+	printf_s("DFS : \n");
 	// call recursive function for all vertices
 	for(int i = 0; i < this->nV; i++)
 	{
