@@ -1,4 +1,4 @@
-// Unidirected Graph implementation : Adjacency List
+// Unidirected Graph implementation : Adjacency List, BFS , DFS, DFS implemenation will be same as queue using stack poping from back
 #include <iostream>
 #include <list>
 using namespace std;
@@ -36,6 +36,7 @@ public:
 	void Print();
 	void BFS(int src);
 	void DFS(int src);
+	void DFSUtils(int src, bool bVisited[]);
 	int NoofVertices() { return this->nV; }
 };
 
@@ -102,8 +103,8 @@ void Graph::BFS(int src)
 		queue.pop_front();
 
 		// Get all adjacent vertices of the dequeued vertex s
-        // If a adjacent has not been visited, then mark it visited
-        // and enqueue it
+		// If a adjacent has not been visited, then mark it visited
+		// and enqueue it
 		Node* iHead = this->listofHeadptr[src].head;
 		while(iHead)
 		{
@@ -126,34 +127,31 @@ void Graph::DFS(int src)
 	for(int i=0; i<this->nV; i++)
 		bVisited[i] = false;
 
-	// creating stack
-	list<int> stack;
-
-	// push the current node on the stack and marked it as visited
-	stack.push_back(src);
-	bVisited[src] = true;
-
-	while(!stack.empty())
+	// call recursive function for all vertices
+	for(int i = 0; i < this->nV; i++)
 	{
-		src = stack.back();
-		printf_s("%d  ", src);
-		stack.pop_back();
-
-		// get the one of adajcent node
-		Node* iHead = this->listofHeadptr[src].head;
-		while(iHead)
-		{
-			int v = iHead->v;
-			if(!bVisited[v])
-			{
-				bVisited[v] = true;
-				stack.push_back(v);
-			}
-			iHead = iHead->next;
-		}
+		if(bVisited[i]==false)
+			DFSUtils( src, bVisited);
 	}
 
 	delete [] bVisited;
+}
+
+void Graph::DFSUtils(int src, bool bVisited[])
+{
+	bVisited[src] = true;
+	printf_s("%d ", src);
+
+	Node* iHead = this->listofHeadptr[src].head;
+	while(iHead)
+	{
+		int v = iHead->v;
+		if(!bVisited[v])
+		{
+			DFSUtils(v,bVisited);
+		}
+		iHead = iHead->next;
+	}
 }
 
 // Utility function to print array of adjacency list
@@ -184,8 +182,8 @@ int main()
 	{
 		scanf_s("%d %d", &u, &v);
 		if( (u>=0) && (u < graph.NoofVertices()) && (v >= 0) && (v < graph.NoofVertices()))
-		 { 
-			 graph.addEdge(u, v);
+		{ 
+			graph.addEdge(u, v);
 		} else
 		{
 			printf("Incorrect Edge please enter again");
@@ -204,3 +202,4 @@ int main()
 
 	return 0;
 }
+
