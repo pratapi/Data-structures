@@ -1,0 +1,166 @@
+// Unidirected Graph implementation : Adjacency List, BFS , DFS, DFS implemenation will be same as queue using stack poping from back
+#include <iostream>
+#include <list>
+using namespace std;
+
+// A structure to represent an adjacency list node
+struct Node
+{
+	int v;
+	Node * next;
+};
+
+// List of Head ptr's to each linked list
+struct HeadPtrList
+{
+	Node * head;
+};
+
+// creating new node or adjacent edge
+Node * CreateNode(const int & v )
+{
+	Node * newNode = new Node();
+	newNode->v = v;
+	newNode->next = NULL;
+	return newNode;
+}
+
+class Graph
+{
+	int nV; // no of vertices
+	HeadPtrList * listofHeadptr; // ptr to head ptr's list
+	bool IsCyclicUtils(int src, bool bVisited[], int parent);
+public:
+	Graph();
+	void addEdge(int u , int v);
+	void Print();
+	int NoofVertices() { return this->nV; }
+	bool IsCyclic();
+};
+
+// initializing graph
+Graph::Graph()
+{
+	int V;
+	printf("Enter the number of vertices for Graph G \n");
+	scanf_s("%d", &V);
+	this->nV = V; // setting number of vertices
+	this->listofHeadptr = new HeadPtrList[V]; // creating head ptr's list with no. of vertices
+	for(int i =0; i < V; i++)
+		this->listofHeadptr[i].head = NULL; // setting first whole list to NULL
+
+}
+
+// adding edge for undirected graph
+void Graph::addEdge(int u, int v)
+{
+	// Check for duplicacy
+	Node * chkEdge = this->listofHeadptr[u].head;
+	while(chkEdge)
+	{
+		if(chkEdge->v == v)
+		{
+			return; // duplicate Edge found
+		} 
+		else 
+		{ chkEdge = chkEdge->next;}
+	}
+
+	// undirected graph firest create from u->v then v->u
+	Node * newEdge_u = CreateNode(v);
+	newEdge_u->next = this->listofHeadptr[u].head;
+	this->listofHeadptr[u].head = newEdge_u;
+
+	Node * newEdge_v = CreateNode(u);
+	newEdge_v->next = this->listofHeadptr[v].head;
+	this->listofHeadptr[v].head = newEdge_v;
+}
+
+// Utility function to print array of adjacency list
+void Graph::Print()
+{
+	for(int u=0; u < this->nV ; u++)
+	{
+		Node * iHead = this->listofHeadptr[u].head;
+		printf("\n Adjacency list of vertex %d\n head ", u);
+		while(iHead)
+		{
+			printf("-> %d", iHead->v);
+			iHead = iHead->next;
+		}
+		printf("\n");
+	}
+}
+
+bool Graph::IsCyclicUtils(int src, bool bVisited[], int parent)
+{
+
+	// mark current node as visited
+	bVisited[src] = true;
+
+	// recur all vertices adjacent to it
+	Node * iHead = this->listofHeadptr[src].head;
+
+	while(iHead)
+	{
+		int v = iHead->v;
+		if(!bVisited[v])
+		{
+			if(IsCyclicUtils(v,bVisited,src))
+				return true;
+		}else if (v != parent)
+		{
+			return true;
+		}
+		iHead = iHead->next;
+	}
+
+	return false;
+}
+
+bool Graph::IsCyclic()
+{
+	// create an array of bool corresponds to not visisted vertices
+	bool * bVisisted = new bool[this->nV];
+	for(int i = 0; i < this->nV; i++)
+		bVisisted[i] = false;
+
+	// traversed each vertices and recurcively call utils 
+	for(int i = 0; i < this->nV; i++)
+	{
+		if(!bVisisted[i])
+			if(IsCyclicUtils(i, bVisisted, -1))
+					return true;
+	}
+	
+	return false;
+}
+// Driver's Program
+int main()
+{
+	Graph graph;
+	int E=0,u=-1,v=-1;
+	printf("Enter the number of Edges \n");
+	scanf_s("%d", &E);
+	printf("Enter the Edges in form of u v \n");
+	while(E--)
+	{
+		scanf_s("%d %d", &u, &v);
+		if( (u>=0) && (u < graph.NoofVertices()) && (v >= 0) && (v < graph.NoofVertices()))
+		{ 
+			graph.addEdge(u, v);
+		} else
+		{
+			printf("Incorrect Edge please enter again");
+			++E;
+		}
+	}
+
+	// Print Graph
+	graph.Print();
+
+	graph.IsCyclic()? printf_s("Graph is Cyclic \n") : printf_s("Graph is not cyclic \n");
+
+	return 0;
+}
+
